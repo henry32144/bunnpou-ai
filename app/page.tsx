@@ -1,9 +1,18 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const PROMPT = `Translate the text in the block surrounded ^$^ to Japanese. If the following text is already Japanese, then check if there is any grammatical error and fix it. \nText Start here:\n^$^`;
+const errorToast = (message: string) =>
+  toast.error(message, {
+    style: {
+      borderRadius: "8px",
+      background: "#ff4b4b",
+      color: "#fff",
+    },
+  });
 
 export default function Home() {
   const [apiKey, setApiKey] = useState("");
@@ -32,8 +41,10 @@ export default function Home() {
         );
         console.log(response.data);
         setApiResponse(response.data.choices[0].message.content || "");
-      } catch (e) {
-        //console.log(e);
+      } catch (error: any) {
+        errorToast(
+          error?.message || "Something is going wrong, Please try again."
+        );
         setApiResponse("Something is going wrong, Please try again.");
       } finally {
         setLoading(false);

@@ -2,6 +2,8 @@
 
 This is a simple web interface for translating text into Japanese with OpenAI GPT 3.5 turbo model. (_Note that using this will incur fees on OpenAI platform_)
 
+[Demo](https://bunnpou-ai.vercel.app/)
+
 ## Getting Started
 
 1. Install dependencies

@@ -4,7 +4,7 @@ import Image from "next/image";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 
-const PROMPT = `Translate the text in the block surrounded ^$^ to Japanese. If the following text is already Japanese, then check if there is any grammatical error and fix it. \nText Start here:\n^$^`;
+const PROMPT = `Translate the text to Japanese. If the following text is already Japanese, then check if there is any grammatical error and fix it. \nText Start here:\n`;
 const errorToast = (message: string) =>
   toast.error(message, {
     style: {
@@ -23,7 +23,7 @@ export default function Home() {
   const handleSubmit = async () => {
     if (inputText !== "") {
       setLoading(true);
-      const prompt = PROMPT.concat(inputText).concat("^$^");
+      const prompt = PROMPT.concat(inputText);
       const model = "gpt-3.5-turbo";
       try {
         const response = await axios.post(
@@ -63,7 +63,6 @@ export default function Home() {
           <input
             type="password"
             name="openai-api-key"
-            id="openai-api-key"
             autoComplete="new-password"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}
@@ -98,7 +97,6 @@ export default function Home() {
               <input
                 type="password"
                 name="openai-api-key"
-                id="openai-api-key"
                 autoComplete="new-password"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}

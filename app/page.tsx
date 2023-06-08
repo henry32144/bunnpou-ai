@@ -1,13 +1,45 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
+import axios from "axios";
+
+const PROMPT = `Translate the text in the block surrounded ^$^ to Japanese. If the following text is already Japanese, then check if there is any grammatical error and fix it. \nText Start here:\n^$^`;
 
 export default function Home() {
-  const [openaiApiKey, setOpenaiApiKey] = useState("");
-  const [openaiApiSecret, setOpenaiApiSecret] = useState("");
-
+  const [apiKey, setApiKey] = useState("");
   const [inputText, setInputText] = useState("");
-  const [responseText, setResponseText] = useState("");
+  const [apiResponse, setApiResponse] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    if (inputText !== "") {
+      setLoading(true);
+      const prompt = PROMPT.concat(inputText).concat("^$^");
+      const model = "gpt-3.5-turbo";
+      try {
+        const response = await axios.post(
+          "https://api.openai.com/v1/chat/completions",
+          {
+            messages: [{ role: "user", content: prompt }],
+            model: model,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${apiKey}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setApiResponse(response.data.choices[0].message.content || "");
+      } catch (e) {
+        //console.log(e);
+        setApiResponse("Something is going wrong, Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <main className="prose flex flex-row min-h-[calc(100vh-4rem)] min-w-full">
@@ -18,24 +50,12 @@ export default function Home() {
             <span className="label-text">OpenAI API KEY</span>
           </label>
           <input
-            type="text"
+            type="password"
             name="openai-api-key"
             id="openai-api-key"
             autoComplete="new-password"
-            value={openaiApiKey}
-            onChange={(e) => setOpenaiApiKey(e.target.value)}
-            className="input input-bordered w-full max-w-xs"
-          />
-          <label className="label mt-4">
-            <span className="label-text">OpenAI API SECRET</span>
-          </label>
-          <input
-            type="password"
-            name="openai-api-secret"
-            id="openai-api-secret"
-            autoComplete="new-password"
-            value={openaiApiSecret}
-            onChange={(e) => setOpenaiApiSecret(e.target.value)}
+            value={apiKey}
+            onChange={(e) => setApiKey(e.target.value)}
             className="input input-bordered w-full max-w-xs"
           />
         </div>
@@ -69,17 +89,16 @@ export default function Home() {
               onChange={(e) => setInputText(e.target.value)}
             ></textarea>
           </div>
-          <button className="btn btn-neutral">
-            {/* <span className="loading loading-spinner"></span>
-            loading */}
-            Submit
+          <button className="btn btn-neutral" onClick={handleSubmit}>
+            {loading && <span className="loading loading-spinner"></span>}
+            {loading ? "Loading" : "Submit"}
           </button>
           <div className="form-control">
             <label className="label">
               <span className="label-text">AI Response</span>
             </label>
             <textarea
-              value={responseText}
+              value={apiResponse}
               readOnly
               className="textarea textarea-bordered min-h-fit"
             ></textarea>

@@ -54,7 +54,7 @@ export default function Home() {
 
   return (
     <main className="prose flex flex-row min-h-[calc(100vh-4rem)] min-w-full">
-      <div className="basis-1/5 px-8 border-r border-solid">
+      <div className="hidden lg:block lg:basis-1/5 px-8 border-r border-solid">
         <h3>Settings</h3>
         <div className="form-control w-full max-w-xs">
           <label className="label">
@@ -71,7 +71,7 @@ export default function Home() {
           />
         </div>
       </div>
-      <div className="basis-4/5 p-8">
+      <div className="basis-full lg:basis-4/5 p-8">
         <div className="flex flex-col gap-8">
           <div className="alert alert-info">
             <svg
@@ -88,6 +88,23 @@ export default function Home() {
               ></path>
             </svg>
             <span>Usage of this feature will incur fee on OpenAI API</span>
+          </div>
+          <div className="block lg:hidden px-4 py-8 rounded-xl border border-solid">
+            <h3 className="m-0">Settings</h3>
+            <div className="form-control w-full">
+              <label className="label">
+                <span className="label-text">OpenAI API KEY</span>
+              </label>
+              <input
+                type="password"
+                name="openai-api-key"
+                id="openai-api-key"
+                autoComplete="new-password"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                className="input input-bordered w-full"
+              />
+            </div>
           </div>
           <div className="form-control">
             <label className="label">
@@ -111,7 +128,8 @@ export default function Home() {
             <textarea
               value={apiResponse}
               readOnly
-              className="textarea textarea-bordered min-h-fit"
+              placeholder="AI response will be displayed here..."
+              className="textarea textarea-bordered min-h-fit bg-base-200"
             ></textarea>
           </div>
         </div>
